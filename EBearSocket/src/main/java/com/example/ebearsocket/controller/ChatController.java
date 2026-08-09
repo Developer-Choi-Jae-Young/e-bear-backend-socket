@@ -3,6 +3,7 @@ package com.example.ebearsocket.controller;
 import com.example.ebearsocket.dto.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -42,7 +43,7 @@ public class ChatController {
     }
 
     @PostMapping("/socket/read-notify")
-    public ResponseEntity<Void> notifyReadStatus(@RequestBody ChatListReqDto dto) {
+    public ResponseEntity<Boolean> notifyReadStatus(@RequestBody ChatListReqDto dto) {
         ChatListResDto chatListResDto = ChatListResDto.builder()
                 .id(dto.getId())
                 .lastMessage(dto.getLastMessage())
@@ -52,6 +53,6 @@ public class ChatController {
 
         messagingTemplate.convertAndSend("/topic/list", chatListResDto);
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.status(HttpStatus.OK).body(true);
     }
 }
